@@ -201,7 +201,6 @@ body{
   to{transform:scale(1);opacity:1}
 }
 </style>
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -218,7 +217,7 @@ body{
  overflow:hidden;
 }
 
-/* ===== CONTENEDOR PRINCIPAL ===== */
+/* ===== CINEMÁTICA ===== */
 #cinematic{
  position:fixed;
  inset:0;
@@ -231,7 +230,7 @@ body{
  transition:opacity .6s ease;
 }
 
-/* ===== TEXTO STUDIO ===== */
+/* ===== STUDIO ===== */
 #studio{
  font-size:34px;
  font-weight:900;
@@ -240,9 +239,7 @@ body{
 }
 
 @keyframes studioMove{
- to{
-  transform:scale(.6) translateY(-260px);
- }
+ to{transform:scale(.6) translateY(-260px)}
 }
 
 /* ===== LOADER ===== */
@@ -285,7 +282,7 @@ body{
  100%{transform:scale(1)}
 }
 
-/* ===== TEXTO ESTADO ===== */
+/* ===== TEXTO ===== */
 #status{
  margin-top:14px;
  font-size:15px;
@@ -308,13 +305,26 @@ body{
 </div>
 
 <script>
-/*
-TIEMPOS EXACTOS:
-0–3s   Studio solo
-3–11s  Procesando Datos...
-11–14s Iniciando App...
-14–19s Completado! + Check
-*/
+/* ===============================
+   CONTROL DE TIEMPOS POR VISITA
+   =============================== */
+
+const key = "cinematic_views";
+let views = parseInt(localStorage.getItem(key) || "0");
+localStorage.setItem(key, views + 1);
+
+// Configuración por vez
+let config;
+
+if(views === 0){
+ config = { p:8, i:3, c:5, init:true };
+}else if(views === 1){
+ config = { p:5, i:2, c:3, init:true };
+}else if(views === 2){
+ config = { p:4, i:1, c:2, init:true };
+}else{
+ config = { p:3, c:3, init:false };
+}
 
 window.addEventListener("load",()=>{
 
@@ -324,41 +334,49 @@ window.addEventListener("load",()=>{
  const check     = document.getElementById("check");
  const status    = document.getElementById("status");
 
- // Estado inicial
- loader.style.display="none";
- check.style.opacity="0";
- status.style.color="#fff";
+ let time = 0;
 
- // 3s → loader visible
+ // Mostrar loader tras 3s del studio
  setTimeout(()=>{
   loader.style.display="flex";
  },3000);
 
- // 11s → cambia texto
+ time += 3;
+
+ // PROCESANDO
  setTimeout(()=>{
-  status.textContent="Iniciando App...";
- },11000);
+  status.textContent = "Procesando Datos...";
+ },time*1000);
 
- // 14s → completado + check
- setTimeout(()=>{
-  status.textContent="Completado!";
-  status.style.color="#00ff9c";
+ time += config.p;
 
-  circle.style.animation="none";
-  check.style.opacity="1";
-  check.style.animation="checkPop .8s ease forwards";
- },14000);
-
- // 19s → desaparecer todo
- setTimeout(()=>{
-  cinematic.style.opacity="0";
-
+ // INICIANDO (si aplica)
+ if(config.init){
   setTimeout(()=>{
-   cinematic.style.display="none";
-   document.body.style.overflow="auto";
-  },600);
+   status.textContent = "Iniciando App...";
+  },time*1000);
+  time += config.i;
+ }
 
- },19000);
+ // COMPLETADO
+ setTimeout(()=>{
+  status.textContent = "Completado!";
+  status.style.color = "#00ff9c";
+  circle.style.animation = "none";
+  check.style.opacity = "1";
+  check.style.animation = "checkPop .8s ease forwards";
+ },time*1000);
+
+ time += config.c;
+
+ // DESAPARECER
+ setTimeout(()=>{
+  cinematic.style.opacity = "0";
+  setTimeout(()=>{
+   cinematic.style.display = "none";
+   document.body.style.overflow = "auto";
+  },600);
+ },time*1000);
 
 });
 </script>
