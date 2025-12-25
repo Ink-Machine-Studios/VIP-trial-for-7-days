@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -200,6 +201,167 @@ body{
   to{transform:scale(1);opacity:1}
 }
 </style>
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cinemática</title>
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+ background:#0b0c10;
+ font-family:system-ui,Arial;
+ color:#fff;
+ overflow:hidden;
+}
+
+/* ===== CONTENEDOR PRINCIPAL ===== */
+#cinematic{
+ position:fixed;
+ inset:0;
+ background:radial-gradient(circle,#1a1f3b,#070812);
+ display:flex;
+ flex-direction:column;
+ align-items:center;
+ justify-content:center;
+ z-index:99999;
+ transition:opacity .6s ease;
+}
+
+/* ===== TEXTO STUDIO ===== */
+#studio{
+ font-size:34px;
+ font-weight:900;
+ letter-spacing:1px;
+ animation:studioMove 3s ease forwards 2s;
+}
+
+@keyframes studioMove{
+ to{
+  transform:scale(.6) translateY(-260px);
+ }
+}
+
+/* ===== LOADER ===== */
+#loader{
+ margin-top:40px;
+ display:none;
+ flex-direction:column;
+ align-items:center;
+}
+
+#circle{
+ width:90px;
+ height:90px;
+ border-radius:50%;
+ border:5px solid #20244a;
+ border-top-color:#7cf3c2;
+ animation:spin 1s linear infinite;
+ position:relative;
+}
+
+@keyframes spin{
+ to{transform:rotate(360deg)}
+}
+
+/* ===== CHECK ===== */
+#check{
+ position:absolute;
+ inset:0;
+ display:flex;
+ align-items:center;
+ justify-content:center;
+ font-size:44px;
+ color:#00ff9c;
+ opacity:0;
+}
+
+@keyframes checkPop{
+ 0%{transform:scale(.2);opacity:0}
+ 60%{transform:scale(1.25);opacity:1}
+ 100%{transform:scale(1)}
+}
+
+/* ===== TEXTO ESTADO ===== */
+#status{
+ margin-top:14px;
+ font-size:15px;
+ font-weight:600;
+}
+</style>
+</head>
+
+<body>
+
+<div id="cinematic">
+  <div id="studio">Ink Machine Studios</div>
+
+  <div id="loader">
+    <div id="circle">
+      <div id="check">✔</div>
+    </div>
+    <div id="status">Procesando Datos...</div>
+  </div>
+</div>
+
+<script>
+/*
+TIEMPOS EXACTOS:
+0–3s   Studio solo
+3–11s  Procesando Datos...
+11–14s Iniciando App...
+14–19s Completado! + Check
+*/
+
+window.addEventListener("load",()=>{
+
+ const cinematic = document.getElementById("cinematic");
+ const loader    = document.getElementById("loader");
+ const circle    = document.getElementById("circle");
+ const check     = document.getElementById("check");
+ const status    = document.getElementById("status");
+
+ // Estado inicial
+ loader.style.display="none";
+ check.style.opacity="0";
+ status.style.color="#fff";
+
+ // 3s → loader visible
+ setTimeout(()=>{
+  loader.style.display="flex";
+ },3000);
+
+ // 11s → cambia texto
+ setTimeout(()=>{
+  status.textContent="Iniciando App...";
+ },11000);
+
+ // 14s → completado + check
+ setTimeout(()=>{
+  status.textContent="Completado!";
+  status.style.color="#00ff9c";
+
+  circle.style.animation="none";
+  check.style.opacity="1";
+  check.style.animation="checkPop .8s ease forwards";
+ },14000);
+
+ // 19s → desaparecer todo
+ setTimeout(()=>{
+  cinematic.style.opacity="0";
+
+  setTimeout(()=>{
+   cinematic.style.display="none";
+   document.body.style.overflow="auto";
+  },600);
+
+ },19000);
+
+});
+</script>
 </head>
 
 <body>
