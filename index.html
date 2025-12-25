@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Robux × Steal</title>
+
+<style>
+:root{
+  --bg:#0b0c10;
+  --card:#151720;
+  --card-soft:#1b1e2a;
+  --border:#2f3348;
+  --accent:#7cf3c2;
+  --accent2:#8ab4ff;
+  --text:#e9ecf1;
+  --muted:#b6bcc9;
+}
+
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+
+body{
+  margin:0;
+  background:radial-gradient(circle at top,#14172a,#0b0c10);
+  font-family:system-ui,Arial;
+  color:var(--text);
+}
+
+/* ===== TOP BAR ===== */
+#topBar{
+  position:fixed;
+  top:0;left:0;width:100%;
+  background:linear-gradient(180deg,#15192d,#0f1220);
+  display:flex;
+  justify-content:space-between;
+  padding:10px 14px;
+  border-bottom:1px solid var(--border);
+  z-index:1000;
+}
+
+.badge{
+  background:rgba(255,255,255,.06);
+  padding:6px 12px;
+  border-radius:14px;
+  font-size:13px;
+  font-weight:600;
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.08);
+}
+
+/* ===== LOGIN ===== */
+#loginScreen{
+  position:fixed;inset:0;
+  background:radial-gradient(circle at top,#1a1e35,#0b0c10);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  z-index:9000;
+}
+
+.login-card{
+  width:90%;
+  max-width:360px;
+  background:linear-gradient(180deg,#1b1f35,#131628);
+  border:1px solid var(--border);
+  border-radius:22px;
+  padding:26px;
+  animation:fadeUp .6s ease;
+}
+
+.login-card h2{
+  margin:0 0 14px;
+  text-align:center;
+}
+
+.login-card input{
+  width:100%;
+  padding:14px;
+  margin:8px 0;
+  background:#0f1220;
+  border:1px solid var(--border);
+  border-radius:16px;
+  color:var(--text);
+}
+
+.btn-main{
+  width:100%;
+  padding:14px;
+  margin-top:10px;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  color:#000;
+  border:none;
+  border-radius:18px;
+  font-weight:800;
+}
+
+/* ===== MODALS ===== */
+#confirmTrial,#buyModal{
+  position:fixed;inset:0;
+  background:rgba(0,0,0,.8);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  z-index:9500;
+}
+
+.modal{
+  background:linear-gradient(180deg,#1c2040,#131628);
+  border:1px solid var(--border);
+  border-radius:22px;
+  padding:22px;
+  width:90%;
+  max-width:360px;
+  text-align:center;
+  animation:pop .35s ease;
+}
+
+.modal p{color:var(--muted)}
+
+.modal-actions{
+  display:flex;
+  gap:10px;
+  margin-top:16px;
+}
+
+.modal-actions button{
+  flex:1;
+  padding:12px;
+  border-radius:16px;
+  border:none;
+  font-weight:800;
+}
+
+.ok{
+  background:linear-gradient(135deg,var(--accent),#a8ffd8);
+  color:#000;
+}
+
+.vip{
+  background:linear-gradient(135deg,#3a3f66,#242850);
+  color:#fff;
+}
+
+/* ===== SHOP ===== */
+#shop{
+  display:none;
+  padding:82px 14px 40px;
+  animation:fadeUp .6s ease;
+}
+
+.section-title{
+  margin:14px 0 6px;
+  font-weight:700;
+  color:var(--accent);
+}
+
+.card{
+  background:linear-gradient(180deg,var(--card),var(--card-soft));
+  border:1px solid var(--border);
+  border-radius:20px;
+  padding:16px;
+  margin-bottom:14px;
+  box-shadow:0 10px 30px rgba(0,0,0,.35);
+  animation:fadeUp .5s ease;
+}
+
+.card h3{margin:0 0 6px}
+
+.buy{
+  padding:10px 16px;
+  border-radius:14px;
+  border:none;
+  background:linear-gradient(135deg,#2b2f52,#1a1d36);
+  color:var(--text);
+  font-weight:700;
+  transition:.15s;
+}
+
+.buy:active{
+  transform:scale(.95);
+  opacity:.85;
+}
+
+/* ===== VIP BOX ===== */
+#vipBox{
+  background:linear-gradient(135deg,#232862,#1b1f4a);
+  border:1px solid #3d44a8;
+  border-radius:22px;
+  padding:16px;
+  margin-bottom:18px;
+  box-shadow:0 0 35px rgba(138,180,255,.25);
+}
+
+/* ===== ANIMATIONS ===== */
+@keyframes fadeUp{
+  from{opacity:0;transform:translateY(20px)}
+  to{opacity:1;transform:translateY(0)}
+}
+@keyframes pop{
+  from{transform:scale(.85);opacity:0}
+  to{transform:scale(1);opacity:1}
+}
+</style>
+</head>
+
+<body>
+
+<!-- ===== SOUNDS ===== -->
+<audio id="bgSound" loop>
+  <source src="https://assets.mixkit.co/music/preview/mixkit-soft-ambient-110.mp3" type="audio/mpeg">
+</audio>
+
+<audio id="clickSound">
+  <source src="https://assets.mixkit.co/sfx/preview/mixkit-modern-click-box-check-1120.mp3" type="audio/mpeg">
+</audio>
+
+<!-- TOP BAR -->
+<div id="topBar">
+  <div class="badge">👤 <span id="userLabel">—</span></div>
+  <div class="badge">⭐ Trial: <span id="trialTimer">NO</span></div>
+</div>
+
+<!-- LOGIN -->
+<div id="loginScreen">
+  <div class="login-card">
+    <h2>Inicia sesión</h2>
+    <input id="username" placeholder="Usuario">
+    <input id="password" type="password" placeholder="Contraseña">
+    <button class="btn-main" onclick="tap(login)">Entrar</button>
+    <p id="error"></p>
+  </div>
+</div>
+
+<!-- CONFIRM TRIAL -->
+<div id="confirmTrial">
+  <div class="modal">
+    <h3>Prueba gratuita</h3>
+    <p>¿Deseas iniciar la prueba gratuita de 7 días?</p>
+    <div class="modal-actions">
+      <button class="ok" onclick="tap(startTrial)">Sí</button>
+      <button class="vip" onclick="tap(logout)">No (Salir)</button>
+    </div>
+  </div>
+</div>
+
+<!-- BUY MODAL -->
+<div id="buyModal">
+  <div class="modal">
+    <h3>Versión de prueba</h3>
+    <p>
+      Tienes una versión de prueba.<br>
+      Necesitas comprar el V.I.P para obtener los beneficios.
+    </p>
+    <div class="modal-actions">
+      <button class="ok" onclick="tap(closeBuy)">Aceptar y continuar</button>
+      <button class="vip" onclick="tap(buyVip)">Comprar V.I.P</button>
+    </div>
+  </div>
+</div>
+
+<!-- SHOP -->
+<div id="shop">
+
+  <div id="vipBox">
+    <h3>⭐ V.I.P Mensual</h3>
+    <p>$7.99 / mes</p>
+    <button class="btn-main" onclick="tap(buyVip)">Comprar V.I.P</button>
+  </div>
+
+  <div class="section-title">Paquetes</div>
+
+  <div class="card"><h3>⏣ 40 Robux</h3><p>$0.60</p><button class="buy" onclick="tap(attemptBuy)">Comprar</button></div>
+  <div class="card"><h3>⏣ 80 Robux</h3><p>$1.25</p><button class="buy" onclick="tap(attemptBuy)">Comprar</button></div>
+  <div class="card"><h3>⏣ 400 Robux</h3><p>$5.49</p><button class="buy" onclick="tap(attemptBuy)">Comprar</button></div>
+  <div class="card"><h3>⏣ 500 Robux</h3><p>$6.49</p><button class="buy" onclick="tap(attemptBuy)">Comprar</button></div>
+  <div class="card"><h3>⏣ 1000 Robux</h3><p>$10.99</p><button class="buy" onclick="tap(attemptBuy)">Comprar</button></div>
+  <div class="card"><h3>⏣ 2000 Robux</h3><p>$20.99</p><button class="buy" onclick="tap(attemptBuy)">Comprar</button></div>
+
+</div>
+
+<script>
+const users=[
+ {u:"Levittochimi56",p:"levitiñochimino561"},
+ {u:"Jonathan9091",p:"Jonansa812"},
+ {u:"Brianzmx17",p:"Brianazx87"},
+ {u:"NicolAZX881",p:"NICOA192"},
+ {u:"STEV172991",p:"Stevnc8114"},
+ {u:"Andersxn2012",p:"ANDERSXN9182"}
+];
+
+let currentUser=null;
+let timerInt=null;
+const TRIAL_MS=7*24*60*60*1000;
+
+const bgSound=document.getElementById("bgSound");
+const clickSound=document.getElementById("clickSound");
+
+function tap(fn){
+  clickSound.currentTime=0;
+  clickSound.play();
+  fn();
+}
+
+function login(){
+ const u=username.value.trim(),p=password.value.trim();
+ const ok=users.find(x=>x.u===u&&x.p===p);
+ if(!ok){error.textContent="Datos incorrectos";return;}
+ currentUser=u;
+ userLabel.textContent=u;
+ loginScreen.style.display="none";
+ confirmTrial.style.display="flex";
+ bgSound.volume=0.3;
+ bgSound.play();
+}
+
+function logout(){location.reload()}
+
+function trialKey(){return "TRIAL_"+currentUser}
+
+function startTrial(){
+ if(!localStorage.getItem(trialKey())){
+  localStorage.setItem(trialKey(),Date.now()+TRIAL_MS);
+ }
+ confirmTrial.style.display="none";
+ shop.style.display="block";
+ startTimer();
+}
+
+function startTimer(){
+ clearInterval(timerInt);
+ timerInt=setInterval(()=>{
+  const exp=localStorage.getItem(trialKey());
+  if(!exp){trialTimer.textContent="NO";return;}
+  const r=exp-Date.now();
+  if(r<=0){trialTimer.textContent="EXPIRADA";clearInterval(timerInt);return;}
+  const d=Math.floor(r/86400000);
+  const h=Math.floor(r%86400000/3600000);
+  trialTimer.textContent=`${d}d ${h}h`;
+ },1000);
+}
+
+function attemptBuy(){buyModal.style.display="flex"}
+function closeBuy(){buyModal.style.display="none"}
+
+function buyVip(){
+ const msg=`Hola, quiero comprar el V.I.P mensual ($7.99).
+Usuario: ${currentUser}`;
+ window.open("https://wa.me/50373826693?text="+encodeURIComponent(msg),"_blank");
+}
+</script>
+
+</body>
+</html>
